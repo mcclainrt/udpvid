@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import argparse
+import udpvidpub as uvp
+import rospy
+
+try:
+    rospy.init_node('user_node', log_level=rospy.DEBUG)
+except rospy.ROSInterruptException as error:
+    print('pubs error with ROS: ', error)
+    exit(1)
+
+device = rospy.get_param("/node/device", 'udp:localhost:14550')
+camera_info_yaml = rospy.get_param("/node/camera_info_yaml")
+print('Running with device <%s> and camera info yaml file <%s>'%(device,camera_info_yaml))
+rovmsg = uvp.RovMsgs()
+
+while not rospy.is_shutdown():
+    rovmsg.publish()

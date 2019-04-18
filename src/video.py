@@ -6,42 +6,10 @@ BlueRov video capture class
 import cv2
 import gi
 import numpy as np
-import rospy
 
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
 
-from sensor_msgs.msg import Image
-from sensor_msgs.msg import CameraInfo
-
-	def ROVvidpub():
-		publ = rospy.Publisher('/camera/image_raw', Image, queue_size=1)
-		rospy.init_node('ROVvid', anonymous=True)
-		while not rospy.is_shutdown():
-			if not Video.frame_available():
-				return
-			_create_camera_msg()
-			publ.publish(_create) #this is where it publishes but need to figure this out
-
-    def _create_camera_msg(self):
-        if not self.Video.frame_available():
-            return
-        frame = self.Video.frame()
-        image_msg = Image()
-        self._create_header(image_msg)
-        height, width, channels = frame.shape
-        image_msg.width = width
-        image_msg.height = height
-        image_msg.encoding = 'bgr8'
-        image_msg.data = frame
-        msg = self.video_bridge.cv2_to_imgmsg(frame, "bgr8")
-        self._create_header(msg)
-        msg.step = int(msg.step)
-        self.pub.set_data('/camera/camera_info',self.camera_info_msg) #publish camerainfo need to fix
-
-	def _create_camera_info_msg(self):
-		if self.camera_info_msg:
-			self.pub.set_data('/camera/camera_info',self.camera_info_msg)
 
 class Video():
     """BlueRov video capture class constructor
@@ -171,9 +139,7 @@ class Video():
         return Gst.FlowReturn.OK
 
 
-
-
-'''if __name__ == '__main__':
+if __name__ == '__main__':
     video = Video()
 
     while True:
@@ -183,4 +149,4 @@ class Video():
         frame = video.frame()
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            break'''
+            break
