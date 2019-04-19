@@ -6,7 +6,7 @@
     <!-- start bluerov2 node -->
     <node respawn="true" pkg="udpvid" type="node" name="node" output="$(arg log_output)">
       <param name="device" value="$(arg bluerov_node_device)"/>
-	  <param name="camera_info_yaml" value="$(find bluerov_ros_playground)/config/camera_info.yaml" />
+	  <param name="camera_info_yaml" value="$(find udpvid)/config/camera_info.yaml" />
     </node>
 <!-- udp:192.168.2.1:14550 -->
 </launch>

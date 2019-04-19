@@ -12,9 +12,10 @@ from cv_bridge import CvBridge
 
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CameraInfo
+from std_msgs.msg import String
 
 
-def yaml_to_CameraInfo(yaml_fname):
+'''def yaml_to_CameraInfo(yaml_fname):
     """
     From https://gist.github.com/rossbar/ebb282c3b73c41c1404123de6cea4771
     Parse a yaml file containing camera calibration data (as produced by
@@ -43,7 +44,7 @@ def yaml_to_CameraInfo(yaml_fname):
     camera_info_msg.R = calib_data["rectification_matrix"]["data"]
     camera_info_msg.P = calib_data["projection_matrix"]["data"]
     camera_info_msg.distortion_model = calib_data["distortion_model"]
-    return camera_info_msg
+    return camera_info_msg'''
 
 
 class RovMsgs():
@@ -57,10 +58,10 @@ class RovMsgs():
 
         # super(RovMsgs, self).__init__()
 
-        # Load yaml file
+        '''# Load yaml file
         self.camera_info_msg = None
         if camera_info_yaml:
-            self.camera_info_msg = yaml_to_CameraInfo(camera_info_yaml)
+            self.camera_info_msg = yaml_to_CameraInfo(camera_info_yaml)'''
 
         self.pub = Pubs()
         self.ROV_name = 'BlueRov2'
@@ -70,18 +71,23 @@ class RovMsgs():
         self.video_bridge = CvBridge()
 
         self.pub_topics = [
-            [
-                self._create_camera_msg,
+
+            [   self._create_camera_msg,
                 '/camera/image_raw',
                 Image,
                 1
             ],
-            [
-                self.pass_function,
-                '/camera/camera_info',
-                CameraInfo,
+            [   self.pass_function,
+                '/test',
+                String,
                 1
             ]
+            #[
+            #    self.pass_function,
+            #    '/camera/camera_info',
+            #    CameraInfo,
+            #    1
+            #]
         ]
 
         self.msg_available = {}
@@ -120,9 +126,9 @@ class RovMsgs():
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = self.model_base_link
 
-    def _create_camera_info_msg(self):
+    '''def _create_camera_info_msg(self):
         if self.camera_info_msg:
-            self.pub.set_data('/camera/camera_info', self.camera_info_msg)
+            self.pub.set_data('/camera/camera_info', self.camera_info_msg)'''
 
     def _create_camera_msg(self):
         if not self.video.frame_available():

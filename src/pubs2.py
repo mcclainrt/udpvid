@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 """Publish data to ROS topic
 """
-import mavros_msgs.msg
+import argparse
 import rospy
 import time
 import yaml
 
 from sensor_msgs.msg import CameraInfo
+from sensor_msgs.msg import Image
+from video import Video
+
+from cv_bridge import CvBridge
 
 def yaml_to_CameraInfo(yaml_fname):
     """
@@ -39,7 +43,7 @@ def yaml_to_CameraInfo(yaml_fname):
     camera_info_msg.distortion_model = calib_data["distortion_model"]
     return camera_info_msg
 
-class Pubs(object):
+'''class Pubs(object):
     """Class that control publish data to ROS
 
     Attributes:
@@ -55,6 +59,8 @@ class Pubs(object):
         self.camera_info_msg = None
         #if camera_info_yaml:
         self.camera_info_msg = yaml_to_CameraInfo('/home/rtmcclai/thesis/Thesis/catkin_ws/src/udpvid/config/camera_info.yaml')
+
+
 
         self.subscribe_topics()
 
@@ -131,6 +137,15 @@ class Pubs(object):
         """
         self.set_data(topic, data)
 
+    def _create_header(self, msg):
+        """ Create ROS message header
+
+        Args:
+            msg (ROS message): ROS message with header
+        """
+        msg.header.stamp = rospy.Time.now()
+        msg.header.frame_id = self.model_base_link
+
 
 if __name__ == '__main__':
     try:
@@ -147,4 +162,49 @@ if __name__ == '__main__':
 
     while not rospy.is_shutdown():
         rc()
-        time.sleep(1)
+        time.sleep(1)'''
+
+
+model_base_link = '/base_link'
+camera_info_msg = yaml_to_CameraInfo('/home/rtmcclai/thesis/Thesis/catkin_ws/src/udpvid/config/camera_info.yaml')
+nopub=False
+
+def getimage(self):
+
+    if not video.frame_available():
+        global nopub
+        nopub=True
+        return
+
+    frame = self.video.frame()
+    image_msg = Image()
+    self._create_header(image_msg)
+    height, width, channels = frame.shape
+    image_msg.width = width
+    image_msg.height = height
+    image_msg.encoding = 'bgr8'
+    image_msg.data = frame
+    cammsg = self.video_bridge.cv2_to_imgmsg(frame, "bgr8")
+    self._create_header(cammsg)
+    cammsg.step = int(cammsg.step)
+    global nopub
+    nopub=False
+    return cammsg
+
+
+infopub = rospy.Publisher('camera_info', CameraInfo, queue_size=1)
+campub = rospy.Publisher('image_raw', Image, queue_size=1)
+
+rospy.init_node('ROVcam', anonymous=True)
+
+if __name__ == '__main__':
+    while not rospy.is_shutdown():
+        if nopub is False:
+            try:
+                getimage()
+                campub.publish(cammsg)
+                infopub.publish(camera_info_msg)
+
+            except rospy.ROSInterruptException as error:
+                print('pubs error with ROS: ', error)
+                exit(1)
