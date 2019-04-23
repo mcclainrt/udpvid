@@ -42,7 +42,18 @@ def yaml_to_CameraInfo(yaml_fname):
     return camera_info_msg
 
 
-model_base_link = '/base_link' # no clue what this is for but its part of the publishing?
+'''def _create_header(msg): # this can go
+    """ Create ROS message header
+
+    Args:
+        msg (ROS message): ROS message with header
+    """
+    msg.header.stamp = rospy.Time.now()
+    msg.header.frame_id = model_base_link'''
+
+
+model_base_link = '/base_link' # no clue what this is for but its part of the header?
+
 # sets the camera info file handle, should be able to change this as an import parameter from the launch
 camera_info_msg = yaml_to_CameraInfo('/home/rtmcclai/thesis/Thesis/catkin_ws/src/udpvid/config/camera_info.yaml')
 video_bridge = CvBridge() # I dont understand why I had to do this, but it alleviates the issue with not providing an argument
@@ -50,11 +61,13 @@ video = Video() # same as above
 
 # cammsg = {} # I think I can get rid of this also
 
-def getimage(): # gets the image from CV
 
+def getimage():  # gets the image from CV
+    if not video.frame_available():
+        return
     frame = video.frame()
     image_msg = Image()
-    _create_header(image_msg)
+    #_create_header(image_msg)
     height, width, channels = frame.shape
     image_msg.width = width
     image_msg.height = height
@@ -64,31 +77,30 @@ def getimage(): # gets the image from CV
     cmsg.step = int(cmsg.step)
     return cmsg
 
-# set the topics up
 
+# set the topics up
 infopub = rospy.Publisher('ROVcam/camera_info', CameraInfo, queue_size=1)
 campub = rospy.Publisher('ROVcam/image_raw', Image, queue_size=1)
 
-rate=30.0 # sleep rate
 
-rospy.init_node('ROVcam') # initialize the node
+rospy.init_node('ROVcam')  # initialize the node
 
-# getimage() # Get the first image, may be able to drop this
 
 if __name__ == '__main__':
     while not rospy.is_shutdown():
         try:
-            cammsg = getimage() # grabs the image
-            msgs = [cammsg, camera_info_msg] # sets up list for the time setting loop
-            timenow = rospy.Time.now() # grabs the current time and makes it the stamp
-            for msg in msgs:
-                msg.header.stamp = timenow # sets the header time stamp, this is how it synchronizes i think
+            if video.frame_available():
+                cammsg = getimage()  # grabs the image
+                msgs = [cammsg, camera_info_msg]  # sets up list for the time setting loop
+                timenow = rospy.Time.now()  # grabs the current time and makes it the stamp
+                for msg in msgs:
+                    msg.header.stamp = timenow  # sets the header time stamp, this is how it synchronizes i think
 
-            # Publish the messages
-
-            campub.publish(cammsg)
-            infopub.publish(camera_info_msg)
-            # rospy.sleep(1.0/rate) # Sleep timing
+                # Publish the messages
+                campub.publish(cammsg)
+                infopub.publish(camera_info_msg)
+            else:
+                pass
 
         except rospy.ROSInterruptException as error:
             print('pubs error with ROS: ', error)
