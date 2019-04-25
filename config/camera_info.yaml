@@ -1,25 +1,25 @@
-# From laptop camera
+# From ROV camera
 
-image_width: 640
-image_height: 480
-camera_name: laptop
+image_width: 1920
+image_height: 1080
+camera_name: narrow_stereo
 camera_matrix:
   rows: 3
   cols: 3
-  data: [615.373519771983, 0, 331.8001629831776, 0, 614.2095128543981, 245.2891524835611, 0, 0, 1]
+  data: [1001.626594, 0.000000, 1019.769056, 0.000000, 1002.042512, 553.156343, 0.000000, 0.000000, 1.000000]
 distortion_model: plumb_bob
 distortion_coefficients:
   rows: 1
   cols: 5
-  data: [0.1587533999581577, -0.22857219064868, 0.006387477363770676, 0.003118364787494989, 0]
+  data: [0.012236, -0.009967, -0.002991, 0.000396, 0.000000]
 rectification_matrix:
   rows: 3
   cols: 3
-  data: [1, 0, 0, 0, 1, 0, 0, 0, 1]
+  data: [1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000]
 projection_matrix:
   rows: 3
   cols: 4
-  data: [634.6784057617188, 0, 333.6335487578472, 0, 0, 632.6680297851562, 247.8841900257466, 0, 0, 0, 1, 0]
+  data: [1005.407959, 0.000000, 1021.855998, 0.000000, 0.000000, 1006.931213, 549.580866, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000]
 
 # Generic example from http://wiki.ros.org/camera_calibration_parsers
 
