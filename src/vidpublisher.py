@@ -99,8 +99,7 @@ if __name__ == '__main__':
                 # Publish the messages
                 campub.publish(cammsg)
                 infopub.publish(camera_info_msg)
-            else:
-                pass
+
 
         except rospy.ROSInterruptException as error:
             print('pubs error with ROS: ', error)
