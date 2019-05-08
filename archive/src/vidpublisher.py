@@ -4,7 +4,6 @@
 import rospy
 import yaml
 
-from std_msgs.msg import String
 from sensor_msgs.msg import CameraInfo
 from sensor_msgs.msg import Image
 from video import Video
@@ -42,11 +41,33 @@ def yaml_to_CameraInfo(yaml_fname):
     camera_info_msg.distortion_model = calib_data["distortion_model"]
     return camera_info_msg
 
+
+'''def _create_header(msg): # this can go
+    """ Create ROS message header
+
+    Args:
+        msg (ROS message): ROS message with header
+    """
+    msg.header.stamp = rospy.Time.now()
+    msg.header.frame_id = model_base_link'''
+
+
+model_base_link = '/base_link' # no clue what this is for but its part of the header?
+
+# sets the camera info file handle, should be able to change this as an import parameter from the launch
+camera_info_msg = yaml_to_CameraInfo('/home/rtmcclai/thesis/Thesis/catkin_ws/src/udpvid/config/camera_info.yaml')
+video_bridge = CvBridge() # I dont understand why I had to do this, but it alleviates the issue with not providing an argument
+video = Video() # same as above
+
+# cammsg = {} # I think I can get rid of this also
+
+
 def getimage():  # gets the image from CV
     if not video.frame_available():
         return
     frame = video.frame()
     image_msg = Image()
+    #_create_header(image_msg)
     height, width, channels = frame.shape
     image_msg.width = width
     image_msg.height = height
@@ -56,30 +77,16 @@ def getimage():  # gets the image from CV
     cmsg.step = int(cmsg.step)
     return cmsg
 
-   
+
+# set the topics up
+infopub = rospy.Publisher('ROVcam/camera_info', CameraInfo, queue_size=1)
+campub = rospy.Publisher('ROVcam/image_raw', Image, queue_size=1)
+
+
+rospy.init_node('ROVcam')  # initialize the node
+
+
 if __name__ == '__main__':
-
-    rospy.init_node('ROVcam')  # initialize the node
-	
-	rospy.loginfo('I started the node')
-	rospy.logerr('Error')
-	rospy.logwarn('warning')
-	print('This used the print command')
-
-    # Get command line arguments
-    yaml_filename = rospy.get_param("~camera_info_yaml",'/home/rtmcclai/thesis/Thesis/catkin_ws/src/udpvid/config/camera_info.yaml')
-    port_num = rospy.get_param("~portnum",'5601')
-    rospy.loginfo("Using camera info from file = " + yaml_filename)
-
-    camera_info_msg = yaml_to_CameraInfo(yaml_filename) #'/home/rtmcclai/thesis/Thesis/catkin_ws/src/udpvid/config/camera_info.yaml')
-    video_bridge = CvBridge() # Create an instance of the CvBridge class.
-    video = Video(port=port_num) # same as above
-
-    # set the topics up
-    infopub = rospy.Publisher('ROVcam/camera_info', CameraInfo, queue_size=1)
-    campub = rospy.Publisher('ROVcam/image_raw', Image, queue_size=1)
-
-
     while not rospy.is_shutdown():
         try:
             if video.frame_available():
@@ -92,9 +99,7 @@ if __name__ == '__main__':
                 # Publish the messages
                 campub.publish(cammsg)
                 infopub.publish(camera_info_msg)
-				rospy.loginfo("Image sent")
-			else
-				rospy.loginfo("No frame available")
+
 
         except rospy.ROSInterruptException as error:
             print('pubs error with ROS: ', error)
