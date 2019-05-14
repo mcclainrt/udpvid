@@ -24,7 +24,7 @@ class Video():
         video_source (string): Udp source ip and port
     """
 
-    def __init__(self, port=5601): # I want this to be a parameter eventually
+    def __init__(self, port=5601):
         """Summary
 
         Args:

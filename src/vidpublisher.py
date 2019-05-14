@@ -4,7 +4,6 @@
 import rospy
 import yaml
 
-from std_msgs.msg import String
 from sensor_msgs.msg import CameraInfo
 from sensor_msgs.msg import Image
 from video import Video
@@ -60,11 +59,6 @@ def getimage():  # gets the image from CV
 if __name__ == '__main__':
 
     rospy.init_node('ROVcam')  # initialize the node
-	
-    rospy.loginfo('I started the node')
-    rospy.logerr('Error')
-    rospy.logwarn('warning')
-    print('This used the print command')
     
     # Get command line arguments
     yaml_filename = rospy.get_param("~camera_info_yaml",'/home/rtmcclai/thesis/Thesis/catkin_ws/src/udpvid/config/camera_info.yaml')
@@ -92,9 +86,9 @@ if __name__ == '__main__':
                 # Publish the messages
                 campub.publish(cammsg)
                 infopub.publish(camera_info_msg)
-		rospy.loginfo("Image sent")
-	    else:
-		rospy.loginfo("No frame available")
+                rospy.loginfo("Image sent")
+            else:
+                rospy.loginfo("No frame available")
 
         except rospy.ROSInterruptException as error:
             print('pubs error with ROS: ', error)

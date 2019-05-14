@@ -15,8 +15,8 @@
   <rosparam command="load" file="$(find apriltags2_ros)/config/tags.yaml" ns="$(arg node_namespace)" />
   
 
-  <!--node pkg="udpvid" type="vidpublisher.py" name="vidpublisher" output="screen" launch-prefix="xterm -e"-->
-	<node pkg="udpvid" type="vidpublisher.py" name="vidpublisher" output="screen">
+  <node pkg="udpvid" type="vidpublisher.py" name="vidpublisher" output="screen" launch-prefix="xterm -e">
+	<!--node pkg="udpvid" type="vidpublisher.py" name="vidpublisher" output="screen"-->
     <param name="camera_info_yaml" value="$(arg camera_info_yaml_file)"/>
     <param name="portnum" value="$(arg udpport)"/>
   </node>
