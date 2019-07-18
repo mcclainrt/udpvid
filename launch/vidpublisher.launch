@@ -30,4 +30,8 @@
     <param name="publish_tag_detections_image" type="bool" value="true" />      <!-- default: false -->
   </node>
   
+ <node pkg="rqt_image_view" type="rqt_image_view" name="rqt_image_view"/>
+
+ <node pkg="rqt_graph" type="rqt_graph" name="rqt_graph"/>
+
 </launch>
