@@ -43,6 +43,7 @@ def yaml_to_CameraInfo(yaml_fname):
 
 def getimage():  # gets the image from CV
     if not video.frame_available():
+        rospy.loginfo("Error in getting image")
         return
     frame = video.frame()
     image_msg = Image()
@@ -73,7 +74,6 @@ if __name__ == '__main__':
     infopub = rospy.Publisher('ROVcam/camera_info', CameraInfo, queue_size=1)
     campub = rospy.Publisher('ROVcam/image_raw', Image, queue_size=1)
 
-
     while not rospy.is_shutdown():
         try:
             if video.frame_available():
@@ -87,9 +87,11 @@ if __name__ == '__main__':
                 campub.publish(cammsg)
                 infopub.publish(camera_info_msg)
                 rospy.loginfo("Image sent")
+                cv2.waitkey(1)
             else:
                 rospy.loginfo("No frame available")
 
+
         except rospy.ROSInterruptException as error:
             print('pubs error with ROS: ', error)
-            exit(1)
+            #exit(1)
