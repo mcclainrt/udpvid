@@ -87,11 +87,10 @@ if __name__ == '__main__':
                 campub.publish(cammsg)
                 infopub.publish(camera_info_msg)
                 rospy.loginfo("Image sent")
-                cv2.waitkey(1)
             else:
                 rospy.loginfo("No frame available")
 
 
         except rospy.ROSInterruptException as error:
             print('pubs error with ROS: ', error)
-            #exit(1)
+            exit(1)
