@@ -6,12 +6,12 @@ camera_name: narrow_stereo
 camera_matrix:
   rows: 3
   cols: 3
-  data: [051.370494, 0.000000, 999.501315, 0.000000, 1053.358385, 546.870599, 0.000000, 0.000000, 1.000000]
+  data: [1078.211947, 0.000000, 1022.850864, 0.000000, 1079.930773, 556.221611, 0.000000, 0.000000, 1.000000]
 distortion_model: plumb_bob
 distortion_coefficients:
   rows: 1
   cols: 5
-  data: [0.033020, -0.007794, -0.004915, -0.005735, 0.000000]
+  data: [0.056855, -0.017849, -0.000777, -0.001063, 0.000000]
 rectification_matrix:
   rows: 3
   cols: 3
@@ -19,7 +19,7 @@ rectification_matrix:
 projection_matrix:
   rows: 3
   cols: 4
-  data: [1084.387939, 0.000000, 983.362510, 0.000000, 0.000000, 1092.143921, 538.874104, 0.000000,
+  data: [1120.272583, 0.000000, 1023.696875, 0.000000, 0.000000, 1121.498535, 554.825997, 0.000000,
 0.000000, 0.000000, 1.000000, 0.000000]
 
 # Generic example from http://wiki.ros.org/camera_calibration_parsers
